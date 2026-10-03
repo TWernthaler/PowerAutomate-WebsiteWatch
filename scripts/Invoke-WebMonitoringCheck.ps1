@@ -229,6 +229,7 @@ foreach ($item in $items)
                 {
                     $updateValues["LastStatus"] = "ChangedNotifyError"
                     $updateValues["LastError"] = $_.Exception.Message
+                    $updateValues["LastValue"] = $currentValue
                 }
             }
         }
