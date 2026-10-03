@@ -42,12 +42,16 @@ param(
 . "$PSScriptRoot\DotEnv.ps1"
 
 $envConfig = Get-DotEnvConfig
+$hasNotifyCooldownMinutes = $PSBoundParameters.ContainsKey("NotifyCooldownMinutes")
+$hasRequestTimeoutSeconds = $PSBoundParameters.ContainsKey("RequestTimeoutSeconds")
+$hasRetryCount = $PSBoundParameters.ContainsKey("RetryCount")
+
 if (-not $SiteUrl) { $SiteUrl = $envConfig["SITE_URL"] }
 if (-not $ClientId) { $ClientId = $envConfig["CLIENT_ID"] }
 if (-not $PSBoundParameters.ContainsKey("ListName") -and $envConfig["LIST_NAME"]) { $ListName = $envConfig["LIST_NAME"] }
-if (-not $PSBoundParameters.ContainsKey("NotifyCooldownMinutes") -and $envConfig["NOTIFY_COOLDOWN_MINUTES"]) { $NotifyCooldownMinutes = [int]$envConfig["NOTIFY_COOLDOWN_MINUTES"] }
-if (-not $PSBoundParameters.ContainsKey("RequestTimeoutSeconds") -and $envConfig["REQUEST_TIMEOUT_SECONDS"]) { $RequestTimeoutSeconds = [int]$envConfig["REQUEST_TIMEOUT_SECONDS"] }
-if (-not $PSBoundParameters.ContainsKey("RetryCount") -and $envConfig["REQUEST_RETRY_COUNT"]) { $RetryCount = [int]$envConfig["REQUEST_RETRY_COUNT"] }
+if (-not $hasNotifyCooldownMinutes -and $envConfig["NOTIFY_COOLDOWN_MINUTES"]) { $NotifyCooldownMinutes = [int]$envConfig["NOTIFY_COOLDOWN_MINUTES"]; $hasNotifyCooldownMinutes = $true }
+if (-not $hasRequestTimeoutSeconds -and $envConfig["REQUEST_TIMEOUT_SECONDS"]) { $RequestTimeoutSeconds = [int]$envConfig["REQUEST_TIMEOUT_SECONDS"]; $hasRequestTimeoutSeconds = $true }
+if (-not $hasRetryCount -and $envConfig["REQUEST_RETRY_COUNT"]) { $RetryCount = [int]$envConfig["REQUEST_RETRY_COUNT"]; $hasRetryCount = $true }
 if (-not $RequestUserAgent) { $RequestUserAgent = $envConfig["REQUEST_USER_AGENT"] }
 if (-not $RequestHeadersJson) { $RequestHeadersJson = $envConfig["REQUEST_HEADERS_JSON"] }
 if (-not $PSBoundParameters.ContainsKey("AuthType") -and $envConfig["AUTH_TYPE"]) { $AuthType = $envConfig["AUTH_TYPE"] }
@@ -80,9 +84,9 @@ if (-not $existingItem)
     }
     if ($TeamsTeamId) { $values["TeamsTeamId"] = $TeamsTeamId }
     if ($TeamsChannelId) { $values["TeamsChannelId"] = $TeamsChannelId }
-    if ($PSBoundParameters.ContainsKey("NotifyCooldownMinutes")) { $values["NotifyCooldownMinutes"] = $NotifyCooldownMinutes }
-    if ($PSBoundParameters.ContainsKey("RequestTimeoutSeconds")) { $values["RequestTimeoutSeconds"] = $RequestTimeoutSeconds }
-    if ($PSBoundParameters.ContainsKey("RetryCount")) { $values["RetryCount"] = $RetryCount }
+    if ($hasNotifyCooldownMinutes) { $values["NotifyCooldownMinutes"] = $NotifyCooldownMinutes }
+    if ($hasRequestTimeoutSeconds) { $values["RequestTimeoutSeconds"] = $RequestTimeoutSeconds }
+    if ($hasRetryCount) { $values["RetryCount"] = $RetryCount }
     if ($RequestUserAgent) { $values["RequestUserAgent"] = $RequestUserAgent }
     if ($RequestHeadersJson) { $values["RequestHeadersJson"] = $RequestHeadersJson }
     if ($AuthType) { $values["AuthType"] = $AuthType }
