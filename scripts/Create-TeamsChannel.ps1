@@ -23,7 +23,7 @@ Import-Module Microsoft.Graph.Teams -ErrorAction Stop
 
 if (-not (Get-MgContext))
 {
-    Connect-MgGraph -Scopes "Group.ReadWrite.All","Channel.ReadWrite.All"
+    Connect-MgGraph -Scopes "Group.Read.All","Channel.ReadWrite.All"
 }
 
 $groupCount = 0

@@ -9,6 +9,7 @@ Monitoring beliebiger Webseiten auf Änderungen mit SharePoint + Power Automate.
     Architektur.md
     Betrieb.md
 /scripts
+    DotEnv.ps1
     Create-WebMonitoringList.ps1
     Add-MonitoringTarget.ps1
     Create-TeamsChannel.ps1
