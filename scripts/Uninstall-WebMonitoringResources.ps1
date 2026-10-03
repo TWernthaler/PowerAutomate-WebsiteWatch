@@ -82,6 +82,10 @@ if ($RemoveTeamsChannel.IsPresent -or $RemoveTeam.IsPresent)
             $channel = @(Get-MgTeamChannel -TeamId $TeamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
             if ($channel) { $ChannelId = $channel.Id }
         }
+        if (-not $ChannelId)
+        {
+            throw "ChannelId not found. Provide -ChannelId or -ChannelDisplayName (or set TEAMS_CHANNEL_ID / TEAMS_CHANNEL_NAME in .env)."
+        }
         if ($ChannelId -and (Confirm-Step -Message "Remove Teams channel '$ChannelId' from team '$TeamId'?" -Force:$Force))
         {
             Remove-MgTeamChannel -TeamId $TeamId -ChannelId $ChannelId

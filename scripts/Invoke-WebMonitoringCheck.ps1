@@ -112,6 +112,11 @@ foreach ($item in $items)
 
     try
     {
+        if ([string]::IsNullOrEmpty($matchStart) -or [string]::IsNullOrEmpty($matchEnd))
+        {
+            throw "MatchStart/MatchEnd missing for target '$title'."
+        }
+
         if ($headersJson)
         {
             $parsedHeaders = ConvertFrom-Json -InputObject $headersJson
@@ -133,10 +138,6 @@ foreach ($item in $items)
             {
                 $response = Invoke-WebRequest -Uri $url -Method GET -TimeoutSec $timeoutSeconds -UserAgent $userAgent -Headers $headers -ErrorAction Stop
                 $content = [string]$response.Content
-                if ([string]::IsNullOrEmpty($matchStart) -or [string]::IsNullOrEmpty($matchEnd))
-                {
-                    throw "MatchStart/MatchEnd missing for target '$title'."
-                }
                 $startIndex = $content.IndexOf($matchStart)
                 if ($startIndex -lt 0) { throw "MatchStart marker not found." }
                 $startIndex += $matchStart.Length
@@ -180,6 +181,7 @@ foreach ($item in $items)
             {
                 $safeCurrentValue = ($currentValue -replace "[\r\n\t]", " ")
                 if ($safeCurrentValue.Length -gt 500) { $safeCurrentValue = $safeCurrentValue.Substring(0, 500) + "..." }
+                # Message text kept in German for current team conventions.
                 $message = "🔔 Webseitenänderung erkannt`n`nName: $title`nNeuer Wert: $safeCurrentValue`nURL: $url"
                 try
                 {
@@ -201,9 +203,13 @@ foreach ($item in $items)
             {
                 $updateValues["LastStatus"] = "ChangedSkipped"
             }
-            else
+            elseif (-not $teamId -or -not $channelId)
             {
                 $updateValues["LastStatus"] = "ChangedNoChannel"
+            }
+            else
+            {
+                $updateValues["LastStatus"] = "ChangedPendingNotification"
             }
             $updateValues["LastValue"] = $currentValue
         }

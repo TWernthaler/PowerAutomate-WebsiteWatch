@@ -42,6 +42,7 @@ function Get-DotEnvConfig {
         }
         else
         {
+            # Only strips inline comments with whitespace before '#': VALUE # comment.
             $value = ($value -replace '\s+#.*$', '').Trim()
         }
 
