@@ -40,12 +40,7 @@ if (-not $group)
 
 $teamId = $group[0].Id
 
-$escapedChannelName = $ChannelDisplayName.Replace("'", "''")
-$existingChannel = @(Get-MgTeamChannel -TeamId $teamId -Filter "displayName eq '$escapedChannelName'" | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
-if (-not $existingChannel)
-{
-    $existingChannel = @(Get-MgTeamChannel -TeamId $teamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
-}
+$existingChannel = @(Get-MgTeamChannel -TeamId $teamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
 if (-not $existingChannel)
 {
     $created = New-MgTeamChannel -TeamId $teamId -DisplayName $ChannelDisplayName -MembershipType $MembershipType
