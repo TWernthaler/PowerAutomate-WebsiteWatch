@@ -21,6 +21,8 @@ Das Skript erstellt:
 - Alle erforderlichen Felder
 - Einen Standarddatensatz für "Windows 11 Release History"
 
+> Hinweis: Für Teams-Benachrichtigungen müssen pro Eintrag `TeamsTeamId` und `TeamsChannelId` gesetzt sein.
+
 ## Neue Überwachungsziele hinzufügen
 
 ```powershell
@@ -31,6 +33,12 @@ pwsh ./scripts/Add-MonitoringTarget.ps1 `
   -Url "https://..." `
   -MatchStart "Updated:" `
   -MatchEnd "<"
+```
+
+Optional kann ein Ziel initial inaktiv angelegt werden:
+
+```powershell
+pwsh ./scripts/Add-MonitoringTarget.ps1 ... -Inactive
 ```
 
 ## Reproduzierbares Flow-Deployment per PAC CLI

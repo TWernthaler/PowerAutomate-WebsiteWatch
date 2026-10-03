@@ -19,7 +19,7 @@ param(
     [Parameter(Mandatory)]
     [string]$MatchEnd,
 
-    [bool]$Active = $true
+    [switch]$Inactive
 )
 
 Connect-PnPOnline `
@@ -34,6 +34,7 @@ $existingItem = Get-PnPListItem `
 
 if (-not $existingItem)
 {
+    $activeValue = -not $Inactive.IsPresent
     Add-PnPListItem `
         -List $ListName `
         -Values @{
@@ -41,6 +42,6 @@ if (-not $existingItem)
             Url        = $Url
             MatchStart = $MatchStart
             MatchEnd   = $MatchEnd
-            Active     = $Active
+            Active     = $activeValue
         }
 }
