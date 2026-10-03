@@ -155,10 +155,10 @@ foreach ($item in $items)
             {
                 $response = Invoke-WebRequest -Uri $url -Method GET -TimeoutSec $timeoutSeconds -UserAgent $userAgent -Headers $headers -ErrorAction Stop
                 $content = [string]$response.Content
-                $startIndex = $content.IndexOf($matchStart)
+                $startIndex = $content.IndexOf($matchStart, [System.StringComparison]::OrdinalIgnoreCase)
                 if ($startIndex -lt 0) { throw "MatchStart marker not found." }
                 $startIndex += $matchStart.Length
-                $endIndex = $content.IndexOf($matchEnd, $startIndex)
+                $endIndex = $content.IndexOf($matchEnd, $startIndex, [System.StringComparison]::OrdinalIgnoreCase)
                 if ($endIndex -lt 0) { throw "MatchEnd marker not found." }
                 $currentValue = $content.Substring($startIndex, $endIndex - $startIndex)
                 $success = $true
@@ -203,6 +203,7 @@ foreach ($item in $items)
                 # Intentional precedence: SkipTeamsNotification consumes the change regardless of cooldown.
                 $updateValues["LastStatus"] = "ChangedSkipNotify"
                 $updateValues["LastValue"] = $currentValue
+                $updateValues["LastNotifiedAt"] = $nowUtc
             }
             elseif (-not $notifyAllowed)
             {
