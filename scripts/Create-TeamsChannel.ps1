@@ -27,7 +27,8 @@ if (-not (Get-MgContext))
 }
 
 $escapedTeamName = $TeamDisplayName.Replace("'", "''")
-$group = Get-MgGroup -Filter "resourceProvisioningOptions/Any(x:x eq 'Team') and displayName eq '$escapedTeamName'" -ConsistencyLevel eventual
+$groupCount = 0
+$group = Get-MgGroup -Filter "resourceProvisioningOptions/Any(x:x eq 'Team') and displayName eq '$escapedTeamName'" -ConsistencyLevel eventual -Count groupCount
 if (-not $group)
 {
     throw "Team '$TeamDisplayName' not found. Create the team first or use the exact display name."
