@@ -22,3 +22,7 @@ Write-Host "Importing flow solution from '$SolutionZipPath'..."
 Write-Host "If the flow does not exist yet, it will be created during import."
 
 pac solution import --path $SolutionZipPath
+if ($LASTEXITCODE -ne 0)
+{
+    throw "pac solution import failed with exit code $LASTEXITCODE."
+}
