@@ -5,6 +5,7 @@ function Get-DotEnvConfig {
 
     if (-not $Path)
     {
+        # Default: repository root .env (DotEnv.ps1 lives in /scripts).
         $Path = Join-Path -Path $PSScriptRoot -ChildPath "..\.env"
     }
 
