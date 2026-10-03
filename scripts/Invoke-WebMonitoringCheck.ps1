@@ -207,10 +207,6 @@ foreach ($item in $items)
             {
                 $updateValues["LastStatus"] = "ChangedNoChannel"
             }
-            else
-            {
-                $updateValues["LastStatus"] = "ChangedPendingNotification"
-            }
             $updateValues["LastValue"] = $currentValue
         }
         else
