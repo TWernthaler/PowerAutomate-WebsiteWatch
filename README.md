@@ -11,6 +11,7 @@ Monitoring beliebiger Webseiten auf Änderungen mit SharePoint + Power Automate.
 /scripts
     Create-WebMonitoringList.ps1
     Add-MonitoringTarget.ps1
+    Create-TeamsChannel.ps1
     Deploy-WebsiteMonitoringFlow.ps1
 /powerplatform
     WebsiteMonitoring.zip (nach Export per PAC CLI)

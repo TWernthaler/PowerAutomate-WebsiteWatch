@@ -17,7 +17,7 @@ Install-Module PnP.PowerShell -Scope CurrentUser
 Copy-Item .env.example .env
 ```
 
-2. Werte in `.env` lokal pflegen (`SITE_URL`, `CLIENT_ID`, optional `LIST_NAME`, `TEAMS_TEAM_ID`, `TEAMS_CHANNEL_ID`, `FLOW_SOLUTION_PATH`).
+2. Werte in `.env` lokal pflegen (`SITE_URL`, `CLIENT_ID`, optional `LIST_NAME`, `TEAMS_TEAM_ID`, `TEAMS_CHANNEL_ID`, `TEAMS_TEAM_NAME`, `TEAMS_CHANNEL_NAME`, `FLOW_SOLUTION_PATH`).
 
 > `.env` bleibt lokal auf dem Entwicklerhost und darf nicht ins Repository.
 
@@ -89,6 +89,20 @@ Der Zielkanal wird pro Listeneintrag über die Felder `TeamsTeamId` und `TeamsCh
 3. Kanalname vergeben (z. B. `website-monitoring`) und erstellen.
 4. Kanal öffnen → `...` → **Link zum Kanal abrufen**.
 5. Aus dem Link `groupId` als `TeamsTeamId` und `channelId` als `TeamsChannelId` übernehmen.
+
+Alternativ per PowerShell (Microsoft Graph):
+
+```powershell
+Install-Module Microsoft.Graph.Teams -Scope CurrentUser
+pwsh ./scripts/Create-TeamsChannel.ps1 -TeamDisplayName "IT Automation" -ChannelDisplayName "website-monitoring"
+```
+
+Das Skript erstellt den Kanal, falls er nicht existiert, oder gibt den vorhandenen zurück und schreibt:
+
+- `TEAMS_TEAM_ID=...`
+- `TEAMS_CHANNEL_ID=...`
+
+Diese Werte in `.env` übernehmen (oder direkt als Parameter an `Add-MonitoringTarget.ps1` übergeben).
 
 ## Reproduzierbares Flow-Deployment per PAC CLI
 
