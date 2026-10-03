@@ -3,7 +3,9 @@ param(
 
     [string]$ClientId,
 
-    [string]$ListName = "WebMonitoring"
+    [string]$ListName = "WebMonitoring",
+
+    [switch]$SkipDefaultItem
 )
 
 . "$PSScriptRoot\DotEnv.ps1"
@@ -63,18 +65,21 @@ foreach ($field in $fields)
     }
 }
 
-$existingDefault = Get-PnPListItem `
-    -List $ListName `
-    -Query "<View><Query><Where><Eq><FieldRef Name='Title'/><Value Type='Text'>Windows 11 Release History</Value></Eq></Where></Query><RowLimit>1</RowLimit></View>"
-if (-not $existingDefault)
+if (-not $SkipDefaultItem.IsPresent)
 {
-    Add-PnPListItem `
+    $existingDefault = Get-PnPListItem `
         -List $ListName `
-        -Values @{
-            Title      = "Windows 11 Release History"
-            Url        = "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information"
-            MatchStart = '<meta name="git_commit_id" content="'
-            MatchEnd   = '"'
-            Active     = $true
-        }
+        -Query "<View><Query><Where><Eq><FieldRef Name='Title'/><Value Type='Text'>Windows 11 Release History</Value></Eq></Where></Query><RowLimit>1</RowLimit></View>"
+    if (-not $existingDefault)
+    {
+        Add-PnPListItem `
+            -List $ListName `
+            -Values @{
+                Title      = "Windows 11 Release History"
+                Url        = "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information"
+                MatchStart = '<meta name="git_commit_id" content="'
+                MatchEnd   = '"'
+                Active     = $true
+            }
+    }
 }

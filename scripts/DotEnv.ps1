@@ -30,11 +30,14 @@ function Get-DotEnvConfig {
 
         $key = $parts[0].Trim()
         $value = $parts[1].Trim()
-        $isQuoted = $value.Length -ge 2 -and (($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'")))
 
-        if ($isQuoted)
+        if ($value -match '^"(.*)"$')
         {
-            $value = $value.Substring(1, $value.Length - 2)
+            $value = $Matches[1]
+        }
+        elseif ($value -match "^'(.*)'$")
+        {
+            $value = $Matches[1]
         }
         else
         {

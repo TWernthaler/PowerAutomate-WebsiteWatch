@@ -41,6 +41,12 @@ Das Skript erstellt:
 
 > Hinweis: Für Teams-Benachrichtigungen müssen pro Eintrag `TeamsTeamId` und `TeamsChannelId` gesetzt sein.
 
+Optional kann der Standarddatensatz unterdrückt werden:
+
+```powershell
+pwsh ./scripts/Create-WebMonitoringList.ps1 -SkipDefaultItem
+```
+
 ## Neue Überwachungsziele hinzufügen
 
 ```powershell
