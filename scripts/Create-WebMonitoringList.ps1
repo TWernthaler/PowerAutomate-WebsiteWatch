@@ -8,7 +8,7 @@ param(
 
 . "$PSScriptRoot\DotEnv.ps1"
 
-$envConfig = Get-DotEnvConfig -Path (Join-Path -Path $PSScriptRoot -ChildPath "..\.env")
+$envConfig = Get-DotEnvConfig
 if (-not $SiteUrl) { $SiteUrl = $envConfig["SITE_URL"] }
 if (-not $ClientId) { $ClientId = $envConfig["CLIENT_ID"] }
 if (-not $PSBoundParameters.ContainsKey("ListName") -and $envConfig["LIST_NAME"]) { $ListName = $envConfig["LIST_NAME"] }

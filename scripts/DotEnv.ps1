@@ -3,6 +3,11 @@ function Get-DotEnvConfig {
         [string]$Path
     )
 
+    if (-not $Path)
+    {
+        $Path = Join-Path -Path $PSScriptRoot -ChildPath "..\.env"
+    }
+
     $config = @{}
     if (-not (Test-Path -Path $Path))
     {
@@ -25,7 +30,7 @@ function Get-DotEnvConfig {
 
         $key = $parts[0].Trim()
         $value = $parts[1].Trim()
-        $isQuoted = ($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'"))
+        $isQuoted = $value.Length -ge 2 -and (($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'")))
 
         if ($isQuoted)
         {
