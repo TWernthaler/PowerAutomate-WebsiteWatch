@@ -17,7 +17,7 @@ function Get-DotEnvConfig {
     foreach ($line in Get-Content -Path $Path)
     {
         $trimmed = $line.Trim()
-        if (-not $trimmed -or $trimmed.StartsWith("#"))
+        if ($trimmed -eq '' -or $trimmed.StartsWith("#"))
         {
             continue
         }
