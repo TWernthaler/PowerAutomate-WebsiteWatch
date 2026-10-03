@@ -17,6 +17,10 @@ param(
     [Parameter(Mandatory)]
     [string]$MatchEnd,
 
+    [string]$TeamsTeamId,
+
+    [string]$TeamsChannelId,
+
     [switch]$Inactive
 )
 
@@ -26,6 +30,8 @@ $envConfig = Get-DotEnvConfig
 if (-not $SiteUrl) { $SiteUrl = $envConfig["SITE_URL"] }
 if (-not $ClientId) { $ClientId = $envConfig["CLIENT_ID"] }
 if (-not $PSBoundParameters.ContainsKey("ListName") -and $envConfig["LIST_NAME"]) { $ListName = $envConfig["LIST_NAME"] }
+if (-not $TeamsTeamId) { $TeamsTeamId = $envConfig["TEAMS_TEAM_ID"] }
+if (-not $TeamsChannelId) { $TeamsChannelId = $envConfig["TEAMS_CHANNEL_ID"] }
 
 if (-not $SiteUrl) { throw "Missing SiteUrl. Provide -SiteUrl or set SITE_URL in .env." }
 if (-not $ClientId) { throw "Missing ClientId. Provide -ClientId or set CLIENT_ID in .env." }
@@ -43,15 +49,19 @@ $existingItem = Get-PnPListItem `
 if (-not $existingItem)
 {
     $activeValue = -not $Inactive.IsPresent
+    $values = @{
+        Title      = $Title
+        Url        = $Url
+        MatchStart = $MatchStart
+        MatchEnd   = $MatchEnd
+        Active     = $activeValue
+    }
+    if ($TeamsTeamId) { $values["TeamsTeamId"] = $TeamsTeamId }
+    if ($TeamsChannelId) { $values["TeamsChannelId"] = $TeamsChannelId }
+
     Add-PnPListItem `
         -List $ListName `
-        -Values @{
-            Title      = $Title
-            Url        = $Url
-            MatchStart = $MatchStart
-            MatchEnd   = $MatchEnd
-            Active     = $activeValue
-        }
+        -Values $values
 }
 else
 {
