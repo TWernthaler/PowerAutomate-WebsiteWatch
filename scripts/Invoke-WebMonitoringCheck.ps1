@@ -193,6 +193,7 @@ foreach ($item in $items)
                     Send-TeamsChannelMessage -TeamId $teamId -ChannelId $channelId -Message $message
                     $updateValues["LastNotifiedAt"] = $nowUtc
                     $updateValues["LastStatus"] = "ChangedNotified"
+                    $updateValues["LastValue"] = $currentValue
                 }
                 catch
                 {
@@ -207,12 +208,12 @@ foreach ($item in $items)
             elseif ($SkipTeamsNotification.IsPresent)
             {
                 $updateValues["LastStatus"] = "ChangedSkipped"
+                $updateValues["LastValue"] = $currentValue
             }
             elseif (-not $teamId -or -not $channelId)
             {
                 $updateValues["LastStatus"] = "ChangedNoChannel"
             }
-            $updateValues["LastValue"] = $currentValue
         }
         else
         {
