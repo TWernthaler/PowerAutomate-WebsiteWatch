@@ -191,7 +191,7 @@ Optional ohne Teams-Nachrichten:
 pwsh ./scripts/Invoke-WebMonitoringCheck.ps1 -SkipTeamsNotification
 ```
 
-Hinweis: `-SkipTeamsNotification` hat Vorrang vor Cooldown-Logik, unterdrückt die Nachricht und schreibt den neuen Wert trotzdem als verarbeitet (`LastValue` wird aktualisiert, `LastNotifiedAt` wird gesetzt).
+Hinweis: `-SkipTeamsNotification` hat Vorrang vor Cooldown-Logik, unterdrückt die Nachricht und schreibt den neuen Wert trotzdem als verarbeitet (`LastValue` wird aktualisiert; `LastNotifiedAt` bleibt unverändert).
 
 ## Reproduzierbares Artefakt sicherstellen
 

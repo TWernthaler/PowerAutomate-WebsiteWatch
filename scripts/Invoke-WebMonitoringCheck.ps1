@@ -203,7 +203,6 @@ foreach ($item in $items)
                 # Intentional precedence: SkipTeamsNotification consumes the change regardless of cooldown.
                 $updateValues["LastStatus"] = "ChangedSkipNotify"
                 $updateValues["LastValue"] = $currentValue
-                $updateValues["LastNotifiedAt"] = $nowUtc
             }
             elseif (-not $notifyAllowed)
             {
