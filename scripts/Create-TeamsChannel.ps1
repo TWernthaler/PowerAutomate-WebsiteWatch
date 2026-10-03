@@ -55,6 +55,7 @@ if ($canUseServerFilter)
 
 if (-not $existingChannel)
 {
+    # Fallback without server-side filter for names with broader character sets.
     $existingChannel = @(Get-MgTeamChannel -TeamId $teamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
 }
 if (-not $existingChannel)

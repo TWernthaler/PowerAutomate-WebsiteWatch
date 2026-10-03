@@ -76,6 +76,7 @@ function Send-TeamsChannelMessage {
 
     $body = @{
         body = @{
+            # Keep as plain text to avoid HTML/message injection semantics.
             contentType = "text"
             content = $Message
         }
@@ -200,7 +201,7 @@ foreach ($item in $items)
             if ($SkipTeamsNotification.IsPresent)
             {
                 # Intentional: change is consumed and LastValue updated even when notification is skipped.
-                $updateValues["LastStatus"] = "ChangedSkipped"
+                $updateValues["LastStatus"] = "ChangedSkipNotify"
                 $updateValues["LastValue"] = $currentValue
             }
             elseif (-not $notifyAllowed)
