@@ -191,6 +191,8 @@ Optional ohne Teams-Nachrichten:
 pwsh ./scripts/Invoke-WebMonitoringCheck.ps1 -SkipTeamsNotification
 ```
 
+Hinweis: `-SkipTeamsNotification` unterdrückt die Nachricht und schreibt den neuen Wert trotzdem als verarbeitet (`LastValue` wird aktualisiert).
+
 ## Reproduzierbares Artefakt sicherstellen
 
 Die Datei `powerplatform/WebsiteMonitoring.zip` muss versioniert bereitliegen, damit ein reproduzierbarer Import jederzeit möglich bleibt.
