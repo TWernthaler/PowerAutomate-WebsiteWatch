@@ -29,18 +29,19 @@ if (-not (Get-MgContext))
 $groupCount = 0
 $groups = Get-MgGroup -Filter "resourceProvisioningOptions/Any(x:x eq 'Team')" -ConsistencyLevel eventual -Count groupCount -All
 $group = $groups | Where-Object { $_.DisplayName -eq $TeamDisplayName }
-if (-not $group)
-{
-    throw "Team '$TeamDisplayName' not found. Create the team first or use the exact display name."
-}
 if ($group.Count -gt 1)
 {
     throw "Multiple teams found with display name '$TeamDisplayName'. Use a unique team name."
 }
+if (-not $group)
+{
+    throw "Team '$TeamDisplayName' not found. Create the team first or use the exact display name."
+}
 
 $teamId = $group[0].Id
 
-$existingChannel = Get-MgTeamChannel -TeamId $teamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName } | Select-Object -First 1
+$escapedChannelName = $ChannelDisplayName.Replace("'", "''")
+$existingChannel = Get-MgTeamChannel -TeamId $teamId -Filter "displayName eq '$escapedChannelName'" | Select-Object -First 1
 if (-not $existingChannel)
 {
     $created = New-MgTeamChannel -TeamId $teamId -DisplayName $ChannelDisplayName -MembershipType $MembershipType
