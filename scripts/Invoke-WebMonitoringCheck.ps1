@@ -200,7 +200,7 @@ foreach ($item in $items)
 
             if ($SkipTeamsNotification.IsPresent)
             {
-                # Intentional: change is consumed and LastValue updated even when notification is skipped.
+                # Intentional precedence: SkipTeamsNotification consumes the change regardless of cooldown.
                 $updateValues["LastStatus"] = "ChangedSkipNotify"
                 $updateValues["LastValue"] = $currentValue
             }

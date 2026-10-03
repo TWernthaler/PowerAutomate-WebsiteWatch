@@ -104,6 +104,8 @@ if ($WriteToEnv.IsPresent)
     if (-not $hasTeamId) { $updated += "TEAMS_TEAM_ID=$teamId" }
     if (-not $hasChannelId) { $updated += "TEAMS_CHANNEL_ID=$channelId" }
 
-    Set-Content -Path $envPath -Value $updated
+    $tempPath = "$envPath.tmp"
+    Set-Content -Path $tempPath -Value $updated -Encoding utf8
+    Move-Item -Path $tempPath -Destination $envPath -Force
     Write-Host "Updated .env with TEAMS_TEAM_ID and TEAMS_CHANNEL_ID."
 }
