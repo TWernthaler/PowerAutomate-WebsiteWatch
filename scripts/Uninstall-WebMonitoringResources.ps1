@@ -69,9 +69,9 @@ if ($RemoveTeamsChannel.IsPresent -or $RemoveTeam.IsPresent)
     {
         $groupCount = 0
         $groups = Get-MgGroup -Filter "resourceProvisioningOptions/Any(x:x eq 'Team')" -ConsistencyLevel eventual -Count groupCount -All
-        $matches = @($groups | Where-Object { $_.DisplayName -eq $TeamDisplayName })
-        if ($matches.Count -eq 1) { $TeamId = $matches[0].Id }
-        elseif ($matches.Count -gt 1) { throw "Multiple teams found with display name '$TeamDisplayName'. Set TEAMS_TEAM_ID or -TeamId." }
+        $teamMatches = @($groups | Where-Object { $_.DisplayName -eq $TeamDisplayName })
+        if ($teamMatches.Count -eq 1) { $TeamId = $teamMatches[0].Id }
+        elseif ($teamMatches.Count -gt 1) { throw "Multiple teams found with display name '$TeamDisplayName'. Set TEAMS_TEAM_ID or -TeamId." }
     }
 
     if ($RemoveTeamsChannel.IsPresent)

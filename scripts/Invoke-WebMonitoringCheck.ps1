@@ -104,6 +104,7 @@ foreach ($item in $items)
     $userAgent = Get-ItemTextValue -Item $item -Name "RequestUserAgent"
     if (-not $userAgent) { $userAgent = $DefaultUserAgent }
     $retryCount = Get-ItemIntValue -Item $item -Name "RetryCount" -Fallback $DefaultRetryCount
+    if ($retryCount -lt 0) { $retryCount = 0 }
     $headersJson = Get-ItemTextValue -Item $item -Name "RequestHeadersJson"
     $authType = Get-ItemTextValue -Item $item -Name "AuthType"
     $authSecretRef = Get-ItemTextValue -Item $item -Name "AuthSecretRef"
@@ -154,7 +155,11 @@ foreach ($item in $items)
             }
         }
 
-        if (-not $success) { throw $lastException }
+        if (-not $success)
+        {
+            if ($null -ne $lastException) { throw $lastException }
+            throw "Request failed without detailed exception."
+        }
 
         $nowUtc = (Get-Date).ToUniversalTime()
         $changed = $currentValue -ne $lastValue
