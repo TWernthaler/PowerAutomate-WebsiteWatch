@@ -5,6 +5,8 @@ param(
     [Parameter(Mandatory)]
     [string]$ClientId,
 
+    [string]$ListName = "WebMonitoring",
+
     [Parameter(Mandatory)]
     [string]$Title,
 
@@ -26,7 +28,7 @@ Connect-PnPOnline `
     -ClientId $ClientId
 
 Add-PnPListItem `
-    -List "WebMonitoring" `
+    -List $ListName `
     -Values @{
         Title      = $Title
         Url        = $Url
