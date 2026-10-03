@@ -104,6 +104,12 @@ Das Skript erstellt den Kanal, falls er nicht existiert, oder gibt den vorhanden
 
 Diese Werte in `.env` übernehmen (oder direkt als Parameter an `Add-MonitoringTarget.ps1` übergeben).
 
+Optional kann `.env` direkt aktualisiert werden:
+
+```powershell
+pwsh ./scripts/Create-TeamsChannel.ps1 -TeamDisplayName "IT Automation" -ChannelDisplayName "website-monitoring" -WriteToEnv
+```
+
 ## Reproduzierbares Flow-Deployment per PAC CLI
 
 Installation:

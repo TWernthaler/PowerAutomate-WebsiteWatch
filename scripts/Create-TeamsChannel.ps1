@@ -2,7 +2,8 @@ param(
     [string]$TeamDisplayName,
     [string]$ChannelDisplayName,
     [ValidateSet("standard", "private", "shared")]
-    [string]$MembershipType = "standard"
+    [string]$MembershipType = "standard",
+    [switch]$WriteToEnv
 )
 
 . "$PSScriptRoot\DotEnv.ps1"
@@ -40,7 +41,18 @@ if (-not $group)
 
 $teamId = $group[0].Id
 
-$existingChannel = @(Get-MgTeamChannel -TeamId $teamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
+$existingChannel = $null
+$canUseServerFilter = $ChannelDisplayName -match "^[A-Za-z0-9 _\-\.\(\)]+$"
+if ($canUseServerFilter)
+{
+    $escapedChannelName = $ChannelDisplayName.Replace("'", "''")
+    $existingChannel = @(Get-MgTeamChannel -TeamId $teamId -Filter "displayName eq '$escapedChannelName'" | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
+}
+
+if (-not $existingChannel)
+{
+    $existingChannel = @(Get-MgTeamChannel -TeamId $teamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName }) | Select-Object -First 1
+}
 if (-not $existingChannel)
 {
     $created = New-MgTeamChannel -TeamId $teamId -DisplayName $ChannelDisplayName -MembershipType $MembershipType
@@ -53,3 +65,40 @@ else
 
 Write-Host "TEAMS_TEAM_ID=$teamId"
 Write-Host "TEAMS_CHANNEL_ID=$channelId"
+
+if ($WriteToEnv.IsPresent)
+{
+    $envPath = Join-Path -Path $PSScriptRoot -ChildPath "..\.env"
+    if (-not (Test-Path -Path $envPath))
+    {
+        throw ".env file not found at '$envPath'. Create it first (for example from .env.example)."
+    }
+
+    $lines = Get-Content -Path $envPath
+    $updated = @()
+    $hasTeamId = $false
+    $hasChannelId = $false
+
+    foreach ($line in $lines)
+    {
+        if ($line -match "^TEAMS_TEAM_ID=")
+        {
+            $updated += "TEAMS_TEAM_ID=$teamId"
+            $hasTeamId = $true
+            continue
+        }
+        if ($line -match "^TEAMS_CHANNEL_ID=")
+        {
+            $updated += "TEAMS_CHANNEL_ID=$channelId"
+            $hasChannelId = $true
+            continue
+        }
+        $updated += $line
+    }
+
+    if (-not $hasTeamId) { $updated += "TEAMS_TEAM_ID=$teamId" }
+    if (-not $hasChannelId) { $updated += "TEAMS_CHANNEL_ID=$channelId" }
+
+    Set-Content -Path $envPath -Value $updated
+    Write-Host "Updated .env with TEAMS_TEAM_ID and TEAMS_CHANNEL_ID."
+}
