@@ -26,18 +26,21 @@ if (-not (Get-MgContext))
     Connect-MgGraph -Scopes "Group.ReadWrite.All","Channel.ReadWrite.All"
 }
 
-$escapedTeamName = $TeamDisplayName.Replace("'", "''")
 $groupCount = 0
-$group = Get-MgGroup -Filter "resourceProvisioningOptions/Any(x:x eq 'Team') and displayName eq '$escapedTeamName'" -ConsistencyLevel eventual -Count groupCount
+$groups = Get-MgGroup -Filter "resourceProvisioningOptions/Any(x:x eq 'Team')" -ConsistencyLevel eventual -Count groupCount -All
+$group = $groups | Where-Object { $_.DisplayName -eq $TeamDisplayName }
 if (-not $group)
 {
     throw "Team '$TeamDisplayName' not found. Create the team first or use the exact display name."
 }
+if ($group.Count -gt 1)
+{
+    throw "Multiple teams found with display name '$TeamDisplayName'. Use a unique team name."
+}
 
 $teamId = $group[0].Id
 
-$escapedChannelName = $ChannelDisplayName.Replace("'", "''")
-$existingChannel = Get-MgTeamChannel -TeamId $teamId -Filter "displayName eq '$escapedChannelName'" | Select-Object -First 1
+$existingChannel = Get-MgTeamChannel -TeamId $teamId | Where-Object { $_.DisplayName -eq $ChannelDisplayName } | Select-Object -First 1
 if (-not $existingChannel)
 {
     $created = New-MgTeamChannel -TeamId $teamId -DisplayName $ChannelDisplayName -MembershipType $MembershipType
