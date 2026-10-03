@@ -114,10 +114,10 @@ foreach ($item in $items)
     {
         if ($headersJson)
         {
-            $parsedHeaders = ConvertFrom-Json -InputObject $headersJson -AsHashtable
-            foreach ($key in $parsedHeaders.Keys)
+            $parsedHeaders = ConvertFrom-Json -InputObject $headersJson
+            foreach ($property in $parsedHeaders.PSObject.Properties)
             {
-                $headers[$key] = [string]$parsedHeaders[$key]
+                $headers[$property.Name] = [string]$property.Value
             }
         }
 
@@ -178,7 +178,9 @@ foreach ($item in $items)
 
             if (-not $SkipTeamsNotification.IsPresent -and $notifyAllowed -and $teamId -and $channelId)
             {
-                $message = "🔔 Webseitenänderung erkannt`n`nName: $title`nNeuer Wert: $currentValue`nURL: $url"
+                $safeCurrentValue = ($currentValue -replace "[\r\n\t]", " ")
+                if ($safeCurrentValue.Length -gt 500) { $safeCurrentValue = $safeCurrentValue.Substring(0, 500) + "..." }
+                $message = "🔔 Webseitenänderung erkannt`n`nName: $title`nNeuer Wert: $safeCurrentValue`nURL: $url"
                 try
                 {
                     Send-TeamsChannelMessage -TeamId $teamId -ChannelId $channelId -Message $message
@@ -194,6 +196,10 @@ foreach ($item in $items)
             elseif (-not $notifyAllowed)
             {
                 $updateValues["LastStatus"] = "ChangedCooldown"
+            }
+            elseif ($SkipTeamsNotification.IsPresent)
+            {
+                $updateValues["LastStatus"] = "ChangedSkipped"
             }
             else
             {
