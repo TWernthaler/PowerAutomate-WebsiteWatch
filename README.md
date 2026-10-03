@@ -13,6 +13,7 @@ Monitoring beliebiger Webseiten auf Änderungen mit SharePoint + Power Automate.
     Add-MonitoringTarget.ps1
 /powerplatform
     WebsiteMonitoring.zip (nach Export per PAC CLI)
+.env.example
 ```
 
 ## Deployment-Ansatz
@@ -20,6 +21,7 @@ Monitoring beliebiger Webseiten auf Änderungen mit SharePoint + Power Automate.
 - SharePoint-Liste wird vollständig per PowerShell bereitgestellt.
 - Cloud-Flow wird als Power-Platform-Solution verwaltet.
 - Austausch zwischen Kollegen erfolgt über PAC CLI Export/Import.
+- Lokale Konfiguration läuft optional über `.env` (aus `.env.example` ableiten), `.env` wird nicht versioniert.
 
 Siehe:
 

@@ -9,10 +9,28 @@ Install-Module PnP.PowerShell -Scope CurrentUser
 - Einmalige Entra App Registrierung für PnP (ClientId)
 - Berechtigter Zugriff auf die Ziel-SharePoint-Site
 
+## Optionale lokale `.env`-Konfiguration
+
+1. Vorlage kopieren:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+2. Werte in `.env` lokal pflegen (`SITE_URL`, `CLIENT_ID`, optional `LIST_NAME`).
+
+> `.env` bleibt lokal auf dem Entwicklerhost und darf nicht ins Repository.
+
 ## SharePoint-Liste automatisiert bereitstellen
 
 ```powershell
-pwsh ./scripts/Create-WebMonitoringList.ps1 -SiteUrl "https://tenant.sharepoint.com/sites/Automation" -ClientId "<app-client-id>"
+pwsh ./scripts/Create-WebMonitoringList.ps1
+```
+
+Ohne `.env` können die Werte weiterhin explizit übergeben werden:
+
+```powershell
+pwsh ./scripts/Create-WebMonitoringList.ps1 -SiteUrl "https://tenant.sharepoint.com/sites/Automation" -ClientId "<app-client-id>" -ListName "WebMonitoring"
 ```
 
 Das Skript erstellt:
@@ -27,13 +45,13 @@ Das Skript erstellt:
 
 ```powershell
 pwsh ./scripts/Add-MonitoringTarget.ps1 `
-  -SiteUrl "https://tenant.sharepoint.com/sites/Automation" `
-  -ClientId "<app-client-id>" `
   -Title "VMware Security Advisory" `
   -Url "https://..." `
   -MatchStart "Updated:" `
   -MatchEnd "<"
 ```
+
+Bei Bedarf können `SiteUrl` und `ClientId` auch hier explizit gesetzt werden (ansonsten aus `.env`).
 
 Optional kann ein Ziel initial inaktiv angelegt werden:
 
