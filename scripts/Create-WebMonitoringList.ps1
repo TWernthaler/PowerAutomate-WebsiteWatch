@@ -55,14 +55,16 @@ foreach ($field in $fields)
     }
 }
 
-$existingDefault = Get-PnPListItem -List $listName -PageSize 200 | Where-Object { $_["Title"] -eq "Windows 11 Release History" }
+$existingDefault = Get-PnPListItem `
+    -List $listName `
+    -Query "<View><Query><Where><Eq><FieldRef Name='Title'/><Value Type='Text'>Windows 11 Release History</Value></Eq></Where></Query><RowLimit>1</RowLimit></View>"
 if (-not $existingDefault)
 {
     Add-PnPListItem `
         -List $listName `
         -Values @{
             Title      = "Windows 11 Release History"
-            Url        = "https://learn.microsoft.com/de-de/windows/release-health/windows11-release-information"
+            Url        = "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information"
             MatchStart = '<meta name="git_commit_id" content="'
             MatchEnd   = '"'
             Active     = $true
