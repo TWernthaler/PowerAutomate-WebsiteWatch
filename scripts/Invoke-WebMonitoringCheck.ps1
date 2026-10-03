@@ -197,7 +197,22 @@ foreach ($item in $items)
                 }
             }
 
-            if (-not $SkipTeamsNotification.IsPresent -and $notifyAllowed -and $teamId -and $channelId)
+            if ($SkipTeamsNotification.IsPresent)
+            {
+                $updateValues["LastStatus"] = "ChangedSkipped"
+                $updateValues["LastValue"] = $currentValue
+            }
+            elseif (-not $notifyAllowed)
+            {
+                $updateValues["LastStatus"] = "ChangedCooldown"
+                $updateValues["LastValue"] = $currentValue
+            }
+            elseif (-not $teamId -or -not $channelId)
+            {
+                $updateValues["LastStatus"] = "ChangedNoChannel"
+                $updateValues["LastValue"] = $currentValue
+            }
+            else
             {
                 $safeCurrentValue = ($currentValue -replace "[\r\n\t]", " ")
                 if ($safeCurrentValue.Length -gt 500) { $safeCurrentValue = $safeCurrentValue.Substring(0, 500) + "..." }
@@ -215,19 +230,6 @@ foreach ($item in $items)
                     $updateValues["LastStatus"] = "ChangedNotifyError"
                     $updateValues["LastError"] = $_.Exception.Message
                 }
-            }
-            elseif (-not $notifyAllowed)
-            {
-                $updateValues["LastStatus"] = "ChangedCooldown"
-            }
-            elseif ($SkipTeamsNotification.IsPresent)
-            {
-                $updateValues["LastStatus"] = "ChangedSkipped"
-                $updateValues["LastValue"] = $currentValue
-            }
-            elseif (-not $teamId -or -not $channelId)
-            {
-                $updateValues["LastStatus"] = "ChangedNoChannel"
             }
         }
         else
