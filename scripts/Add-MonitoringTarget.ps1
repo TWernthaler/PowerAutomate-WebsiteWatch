@@ -27,12 +27,20 @@ Connect-PnPOnline `
     -Interactive `
     -ClientId $ClientId
 
-Add-PnPListItem `
+$escapedUrl = $Url.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("'", "&apos;").Replace('"', "&quot;")
+$existingItem = Get-PnPListItem `
     -List $ListName `
-    -Values @{
-        Title      = $Title
-        Url        = $Url
-        MatchStart = $MatchStart
-        MatchEnd   = $MatchEnd
-        Active     = $Active
-    }
+    -Query "<View><Query><Where><Eq><FieldRef Name='Url'/><Value Type='Note'>$escapedUrl</Value></Eq></Where></Query><RowLimit>1</RowLimit></View>"
+
+if (-not $existingItem)
+{
+    Add-PnPListItem `
+        -List $ListName `
+        -Values @{
+            Title      = $Title
+            Url        = $Url
+            MatchStart = $MatchStart
+            MatchEnd   = $MatchEnd
+            Active     = $Active
+        }
+}
