@@ -1,3 +1,12 @@
+<#
+.SYNOPSIS
+Führt robuste Monitoring-Prüfungen für alle aktiven WebMonitoring-Einträge aus.
+
+.DESCRIPTION
+Liest aktive Ziele aus SharePoint, ruft Webseiten mit Retry/Timeout ab, extrahiert Werte
+zwischen MatchStart/MatchEnd, aktualisiert Statusfelder und versendet optional Teams-Nachrichten
+unter Berücksichtigung eines Cooldowns.
+#>
 param(
     [string]$SiteUrl,
     [string]$ClientId,
@@ -100,7 +109,9 @@ foreach ($item in $items)
     $teamId = Get-ItemTextValue -Item $item -Name "TeamsTeamId"
     $channelId = Get-ItemTextValue -Item $item -Name "TeamsChannelId"
     $cooldownMinutes = Get-ItemIntValue -Item $item -Name "NotifyCooldownMinutes" -Fallback 360
+    if ($cooldownMinutes -lt 0) { $cooldownMinutes = 0 }
     $timeoutSeconds = Get-ItemIntValue -Item $item -Name "RequestTimeoutSeconds" -Fallback $DefaultTimeoutSeconds
+    if ($timeoutSeconds -lt 1) { $timeoutSeconds = 1 }
     $userAgent = Get-ItemTextValue -Item $item -Name "RequestUserAgent"
     if (-not $userAgent) { $userAgent = $DefaultUserAgent }
     $retryCount = Get-ItemIntValue -Item $item -Name "RetryCount" -Fallback $DefaultRetryCount
@@ -113,6 +124,10 @@ foreach ($item in $items)
 
     try
     {
+        if (-not [Uri]::IsWellFormedUriString($url, [System.UriKind]::Absolute))
+        {
+            throw "Invalid URL '$url'."
+        }
         if ([string]::IsNullOrEmpty($matchStart) -or [string]::IsNullOrEmpty($matchEnd))
         {
             throw "MatchStart/MatchEnd missing for target '$title'."

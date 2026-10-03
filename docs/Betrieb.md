@@ -8,6 +8,17 @@ Install-Module PnP.PowerShell -Scope CurrentUser
 
 - Einmalige Entra App Registrierung für PnP (ClientId)
 - Berechtigter Zugriff auf die Ziel-SharePoint-Site
+- Für Teams-Automation: Microsoft Graph PowerShell Modul(e)
+- Für Flow-Deployment: PAC CLI
+
+## Betriebsentscheidung (wichtig)
+
+Lege einen primären Betriebsmodus fest:
+
+- **Flow-zentriert** (Power Automate)
+- **Script-zentriert** (`Invoke-WebMonitoringCheck.ps1`)
+
+Paralleler Dauerbetrieb beider Modi ist nicht empfohlen (Doppelverarbeitung).
 
 ## Optionale lokale `.env`-Konfiguration
 
@@ -183,6 +194,17 @@ pwsh ./scripts/Invoke-WebMonitoringCheck.ps1 -SkipTeamsNotification
 ## Reproduzierbares Artefakt sicherstellen
 
 Die Datei `powerplatform/WebsiteMonitoring.zip` muss versioniert bereitliegen, damit ein reproduzierbarer Import jederzeit möglich bleibt.
+
+## Release-/Abnahme-Checkliste
+
+- Installationstools/Module verifiziert
+- `.env` lokal gepflegt, keine Secrets committed
+- SharePoint-Liste inkl. Felder erstellt
+- Mindestens ein Ziel inkl. Team/Channel-ID angelegt
+- Monitoring-Lauf erfolgreich mit Statusupdates (`LastStatus`, `LastError`)
+- Teams-Testbenachrichtigung erfolgreich
+- Flow-Solution importierbar
+- Deinstallation im Testtenant erfolgreich getestet
 
 ## Saubere Deinstallation aller erzeugten Ressourcen
 

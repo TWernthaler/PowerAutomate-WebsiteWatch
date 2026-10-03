@@ -1,3 +1,7 @@
+<#
+.SYNOPSIS
+Importiert die Power-Platform-Solution für den Monitoring-Flow per PAC CLI.
+#>
 param(
     [string]$SolutionZipPath
 )

@@ -1,3 +1,7 @@
+<#
+.SYNOPSIS
+Erstellt einen Teams-Kanal falls nicht vorhanden und liefert Team/Channel IDs zurück.
+#>
 param(
     [string]$TeamDisplayName,
     [string]$ChannelDisplayName,

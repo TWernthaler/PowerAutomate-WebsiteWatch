@@ -1,3 +1,7 @@
+<#
+.SYNOPSIS
+Erstellt oder aktualisiert die SharePoint-Liste WebMonitoring inkl. benötigter Felder.
+#>
 param(
     [string]$SiteUrl,
 

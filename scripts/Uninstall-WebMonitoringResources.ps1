@@ -1,3 +1,11 @@
+<#
+.SYNOPSIS
+Entfernt erzeugte WebMonitoring-Ressourcen kontrolliert.
+
+.DESCRIPTION
+Optionales Entfernen von SharePoint-Liste, Teams-Kanal/Team und Power-Platform-Solution.
+Standardmäßig mit Bestätigungsabfragen; mit -Force ohne Rückfragen.
+#>
 param(
     [string]$SiteUrl,
     [string]$ClientId,

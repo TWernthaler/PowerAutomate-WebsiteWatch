@@ -1,3 +1,7 @@
+<#
+.SYNOPSIS
+Liest einfache KEY=VALUE Paare aus einer lokalen .env-Datei.
+#>
 function Get-DotEnvConfig {
     param(
         [string]$Path

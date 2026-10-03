@@ -1,3 +1,7 @@
+<#
+.SYNOPSIS
+Fügt ein Monitoring-Ziel in die SharePoint-Liste ein (idempotent über URL).
+#>
 param(
     [string]$SiteUrl,
 
