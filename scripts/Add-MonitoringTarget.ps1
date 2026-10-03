@@ -25,7 +25,7 @@ param(
 $envConfig = Get-DotEnvConfig -Path (Join-Path -Path $PSScriptRoot -ChildPath "..\.env")
 if (-not $SiteUrl) { $SiteUrl = $envConfig["SITE_URL"] }
 if (-not $ClientId) { $ClientId = $envConfig["CLIENT_ID"] }
-if ($envConfig["LIST_NAME"]) { $ListName = $envConfig["LIST_NAME"] }
+if (-not $PSBoundParameters.ContainsKey("ListName") -and $envConfig["LIST_NAME"]) { $ListName = $envConfig["LIST_NAME"] }
 
 if (-not $SiteUrl) { throw "Missing SiteUrl. Provide -SiteUrl or set SITE_URL in .env." }
 if (-not $ClientId) { throw "Missing ClientId. Provide -ClientId or set CLIENT_ID in .env." }

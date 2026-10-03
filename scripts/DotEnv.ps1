@@ -25,10 +25,15 @@ function Get-DotEnvConfig {
 
         $key = $parts[0].Trim()
         $value = $parts[1].Trim()
+        $isQuoted = ($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'"))
 
-        if (($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'")))
+        if ($isQuoted)
         {
             $value = $value.Substring(1, $value.Length - 2)
+        }
+        else
+        {
+            $value = ($value -replace '\s+#.*$', '').Trim()
         }
 
         $config[$key] = $value
