@@ -17,7 +17,7 @@ Install-Module PnP.PowerShell -Scope CurrentUser
 Copy-Item .env.example .env
 ```
 
-2. Werte in `.env` lokal pflegen (`SITE_URL`, `CLIENT_ID`, optional `LIST_NAME`, `TEAMS_TEAM_ID`, `TEAMS_CHANNEL_ID`, `TEAMS_TEAM_NAME`, `TEAMS_CHANNEL_NAME`, `FLOW_SOLUTION_PATH`).
+2. Werte in `.env` lokal pflegen (`SITE_URL`, `CLIENT_ID`, optional `LIST_NAME`, `TEAMS_TEAM_ID`, `TEAMS_CHANNEL_ID`, `TEAMS_TEAM_NAME`, `TEAMS_CHANNEL_NAME`, `FLOW_SOLUTION_PATH`, `FLOW_SOLUTION_NAME`, `REQUEST_TIMEOUT_SECONDS`, `REQUEST_RETRY_COUNT`, `REQUEST_USER_AGENT`, `NOTIFY_COOLDOWN_MINUTES`, `REQUEST_HEADERS_JSON`, `AUTH_TYPE`, `AUTH_SECRET_REF`).
 
 > `.env` bleibt lokal auf dem Entwicklerhost und darf nicht ins Repository.
 
@@ -74,6 +74,16 @@ Optional kann ein Ziel initial inaktiv angelegt werden:
 ```powershell
 pwsh ./scripts/Add-MonitoringTarget.ps1 ... -Inactive
 ```
+
+Weitere optionale Parameter pro Ziel:
+
+- `-RequestTimeoutSeconds`
+- `-RetryCount`
+- `-RequestUserAgent`
+- `-NotifyCooldownMinutes`
+- `-RequestHeadersJson` (JSON-Objekt als String)
+- `-AuthType` (`None`, `BearerEnvVar`, `BasicEnvVar`)
+- `-AuthSecretRef` (Name einer lokalen Umgebungsvariable mit Secret)
 
 ### Teams-Kanal für Benachrichtigungen festlegen
 
@@ -148,4 +158,51 @@ Optional mit Pfad:
 pwsh ./scripts/Deploy-WebsiteMonitoringFlow.ps1 -SolutionZipPath ".\powerplatform\WebsiteMonitoring.zip"
 ```
 
-Neue Ziele benötigen keine Flow-Anpassung, solange sie als zusätzliche Listeneinträge gepflegt werden.
+## Robuster Monitoring-Lauf per Skript
+
+Für robustes Monitoring beliebiger Webseiten inklusive Fehlerbehandlung:
+
+```powershell
+pwsh ./scripts/Invoke-WebMonitoringCheck.ps1
+```
+
+Das Skript bietet:
+
+- Fehlerbehandlung pro Ziel (`LastStatus`, `LastError`, `ConsecutiveFailures`)
+- Retry/Timeout/User-Agent pro Ziel oder global per `.env`
+- Marker-Validierung (`MatchStart`/`MatchEnd`) mit sauberem Fehlerstatus
+- Cooldown-basierte Benachrichtigung (`NotifyCooldownMinutes`, `LastNotifiedAt`)
+- Optionale Header/Auth-Metadaten (`RequestHeadersJson`, `AuthType`, `AuthSecretRef`)
+
+Optional ohne Teams-Nachrichten:
+
+```powershell
+pwsh ./scripts/Invoke-WebMonitoringCheck.ps1 -SkipTeamsNotification
+```
+
+## Reproduzierbares Artefakt sicherstellen
+
+Die Datei `powerplatform/WebsiteMonitoring.zip` muss versioniert bereitliegen, damit ein reproduzierbarer Import jederzeit möglich bleibt.
+
+## Saubere Deinstallation aller erzeugten Ressourcen
+
+Das folgende Skript entfernt die erzeugten Ressourcen kontrolliert:
+
+```powershell
+pwsh ./scripts/Uninstall-WebMonitoringResources.ps1 `
+  -RemoveSharePointList `
+  -RemoveTeamsChannel `
+  -RemoveFlowSolution
+```
+
+Optional auch das gesamte Team entfernen:
+
+```powershell
+pwsh ./scripts/Uninstall-WebMonitoringResources.ps1 -RemoveTeam
+```
+
+Für non-interactive Ausführung (ohne Rückfragen):
+
+```powershell
+pwsh ./scripts/Uninstall-WebMonitoringResources.ps1 -RemoveSharePointList -RemoveTeamsChannel -RemoveFlowSolution -Force
+```

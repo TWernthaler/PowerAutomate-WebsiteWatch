@@ -40,6 +40,17 @@ $fields = @(
     @{ Name = "MatchStart"; Type = "Note" },
     @{ Name = "MatchEnd"; Type = "Note" },
     @{ Name = "LastValue"; Type = "Note" },
+    @{ Name = "LastStatus"; Type = "Text" },
+    @{ Name = "LastError"; Type = "Note" },
+    @{ Name = "ConsecutiveFailures"; Type = "Number" },
+    @{ Name = "LastNotifiedAt"; Type = "DateTime" },
+    @{ Name = "NotifyCooldownMinutes"; Type = "Number" },
+    @{ Name = "RequestTimeoutSeconds"; Type = "Number" },
+    @{ Name = "RetryCount"; Type = "Number" },
+    @{ Name = "RequestUserAgent"; Type = "Text" },
+    @{ Name = "RequestHeadersJson"; Type = "Note" },
+    @{ Name = "AuthType"; Type = "Text" },
+    @{ Name = "AuthSecretRef"; Type = "Text" },
     @{ Name = "TeamsTeamId"; Type = "Text" },
     @{ Name = "TeamsChannelId"; Type = "Text" },
     @{ Name = "Active"; Type = "Boolean" },
@@ -79,6 +90,12 @@ if (-not $SkipDefaultItem.IsPresent)
                 Url        = "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information"
                 MatchStart = '<meta name="git_commit_id" content="'
                 MatchEnd   = '"'
+                LastStatus = "NeverChecked"
+                ConsecutiveFailures = 0
+                NotifyCooldownMinutes = 360
+                RequestTimeoutSeconds = 30
+                RetryCount = 2
+                RequestUserAgent = "PowerAutomate-WebsiteWatch/1.0"
                 Active     = $true
             }
     }
